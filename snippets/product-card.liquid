@@ -1,0 +1,122 @@
+{%- comment -%}
+  Renders a product card.
+  Usage: {%- render 'product-card', product: product -%}
+{%- endcomment -%}
+
+{%- assign first_image = product.featured_image -%}
+{%- assign second_image = product.images[1] -%}
+{%- assign on_sale = false -%}
+{%- if product.compare_at_price > product.price -%}
+  {%- assign on_sale = true -%}
+{%- endif -%}
+
+<div class="product-card">
+
+  <!-- Image -->
+  <a href="{{ product.url }}" class="product-card__img-wrap" aria-label="{{ product.title | escape }}">
+    {%- if first_image -%}
+      <img
+        class="product-card__img product-card__img--primary"
+        src="{{ first_image | img_url: '600x800', crop: 'center' }}"
+        alt="{{ first_image.alt | default: product.title | escape }}"
+        width="300" height="400"
+        loading="lazy">
+      {%- if second_image -%}
+        <img
+          class="product-card__img product-card__img--hover"
+          src="{{ second_image | img_url: '600x800', crop: 'center' }}"
+          alt="{{ second_image.alt | default: product.title | escape }}"
+          width="300" height="400"
+          loading="lazy">
+      {%- endif -%}
+    {%- else -%}
+      <div class="product-card__img-placeholder"></div>
+    {%- endif -%}
+
+    {%- if on_sale -%}
+      <span class="product-card__badge">SALE</span>
+    {%- elsif product.available == false -%}
+      <span class="product-card__badge product-card__badge--soldout">SOLD OUT</span>
+    {%- endif -%}
+  </a>
+
+  <!-- Color swatches (Nobero-style) -->
+  {%- assign color_option = nil -%}
+  {%- for option in product.options_with_values -%}
+    {%- assign opt_downcase = option.name | downcase -%}
+    {%- if opt_downcase == 'color' or opt_downcase == 'colour' -%}
+      {%- assign color_option = option -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if color_option != nil and color_option.values.size > 1 -%}
+    <div class="product-card__swatches">
+      {%- for value in color_option.values limit: 5 -%}
+        {%- assign swatch_handle = value | handle -%}
+        <span
+          class="swatch"
+          style="background-color: {{ value }};"
+          title="{{ value }}"
+          data-color="{{ value | escape }}">
+        </span>
+      {%- endfor -%}
+      {%- if color_option.values.size > 5 -%}
+        <span class="swatch-more">+{{ color_option.values.size | minus: 5 }}</span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Info -->
+  <div class="product-card__info">
+    <a href="{{ product.url }}" class="product-card__title">{{ product.title }}</a>
+    <div class="product-card__price">
+      {%- if on_sale -%}
+        <span class="price price--sale">{{ product.price | money }}</span>
+        <span class="price price--compare">{{ product.compare_at_price | money }}</span>
+      {%- else -%}
+        <span class="price">{{ product.price | money }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- Quick Add -->
+  {%- if product.available -%}
+    {%- assign has_sizes = false -%}
+    {%- for option in product.options_with_values -%}
+      {%- assign opt_down = option.name | downcase -%}
+      {%- if opt_down == 'size' -%}
+        {%- assign has_sizes = true -%}
+        {%- assign size_option = option -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_sizes -%}
+      <div class="product-card__quick-add">
+        <div class="quick-add-sizes">
+          {%- for variant in product.variants -%}
+            {%- if variant.available -%}
+              <button
+                type="button"
+                class="quick-add-size"
+                data-variant-id="{{ variant.id }}"
+                data-product-title="{{ product.title | escape }}">
+                {{ variant.title | split: ' / ' | last }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      <button
+        type="button"
+        class="product-card__atc-btn"
+        data-variant-id="{{ product.first_available_variant.id }}"
+        data-product-title="{{ product.title | escape }}">
+        ADD TO BAG
+      </button>
+    {%- endif -%}
+  {%- else -%}
+    <button type="button" class="product-card__atc-btn" disabled>SOLD OUT</button>
+  {%- endif -%}
+
+</div>

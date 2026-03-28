@@ -1,0 +1,127 @@
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+
+    <!-- Mobile menu toggle -->
+    <button type="button" class="header__menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span class="burger">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+
+    <!-- Logo -->
+    <a href="/" class="header__logo">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}" width="120" height="40" loading="eager">
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name | upcase }}</span>
+      {%- endif -%}
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="header__nav" aria-label="Main navigation">
+      <ul class="header__nav-list">
+        {%- for link in section.settings.menu.links -%}
+          <li class="header__nav-item{% if link.links.size > 0 %} has-dropdown{% endif %}">
+            <a href="{{ link.url }}" class="header__nav-link{% if link.active %} active{% endif %}">
+              {{ link.title }}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <ul class="header__dropdown">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}" class="header__dropdown-link">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <!-- Header actions -->
+    <div class="header__actions">
+      <a href="/search" class="header__action-btn" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M13.5 13.5L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}/account{% else %}/account/login{% endif %}" class="header__action-btn" aria-label="Account">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 19c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+      <button type="button" class="header__action-btn header__cart-btn" id="cart-toggle" aria-label="Cart ({{ cart.item_count }})">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M1 1h3l2 10h9l2-7H5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="8" cy="16.5" r="1.5" fill="currentColor"/>
+          <circle cx="15" cy="16.5" r="1.5" fill="currentColor"/>
+        </svg>
+        {%- if cart.item_count > 0 -%}
+          <span class="cart-bubble" id="cart-bubble">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div class="mobile-nav__overlay" id="mobile-overlay"></div>
+  <div class="mobile-nav__panel">
+    <div class="mobile-nav__head">
+      <a href="/" class="mobile-nav__logo">{{ shop.name | upcase }}</a>
+      <button type="button" class="mobile-nav__close" id="mobile-close" aria-label="Close menu">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M1 1L15 15M15 1L1 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="mobile-nav__links">
+      <ul>
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+            {%- if link.links.size > 0 -%}
+              <ul class="mobile-nav__sub">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+    <div class="mobile-nav__footer">
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}/account{% else %}/account/login{% endif %}">
+          {% if customer %}My Account{% else %}Login / Register{% endif %}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [{ "name": "Header" }]
+}
+{% endschema %}

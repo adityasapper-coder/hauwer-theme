@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0909">
+  <title>
+    {{ page_title }}
+    {%- unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}
+  </title>
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+<body class="{% if customer %}logged-in{% endif %}">
+
+  {%- section 'announcement-bar' -%}
+  {%- section 'header' -%}
+
+  <main id="MainContent" class="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {%- section 'footer' -%}
+
+  <!-- CART DRAWER -->
+  <div id="cart-drawer" class="cart-drawer" aria-hidden="true">
+    <div class="cart-drawer__overlay" data-close-cart></div>
+    <div class="cart-drawer__panel">
+
+      <header class="cart-drawer__header">
+        <h2 class="cart-drawer__title">
+          YOUR BAG (<span id="cart-item-count">{{ cart.item_count }}</span>)
+        </h2>
+        <button type="button" class="cart-drawer__close" data-close-cart aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M1 1L15 15M15 1L1 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="cart-drawer__body" id="cart-drawer-body">
+        {%- if cart.item_count == 0 -%}
+          <div class="cart-drawer__empty">
+            <p>Your bag is empty.</p>
+            <a href="/collections/all" class="btn btn--outline" data-close-cart>SHOP NOW</a>
+          </div>
+        {%- else -%}
+          {%- for item in cart.items -%}
+            <div class="cart-item" data-key="{{ item.key }}">
+              <a href="{{ item.url }}" class="cart-item__img-wrap">
+                {%- if item.image -%}
+                  <img src="{{ item.image | img_url: '120x' }}" alt="{{ item.title | escape }}" width="80" height="100" loading="lazy">
+                {%- endif -%}
+              </a>
+              <div class="cart-item__info">
+                <a href="{{ item.url }}" class="cart-item__name">{{ item.product.title }}</a>
+                {%- unless item.variant.title == 'Default Title' -%}
+                  <p class="cart-item__variant">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <div class="cart-item__row">
+                  <div class="cart-qty">
+                    <button class="cart-qty__btn" data-action="minus" data-key="{{ item.key }}" data-qty="{{ item.quantity | minus: 1 }}">−</button>
+                    <span class="cart-qty__val">{{ item.quantity }}</span>
+                    <button class="cart-qty__btn" data-action="plus" data-key="{{ item.key }}" data-qty="{{ item.quantity | plus: 1 }}">+</button>
+                  </div>
+                  <span class="cart-item__price">{{ item.final_line_price | money }}</span>
+                </div>
+              </div>
+              <button type="button" class="cart-item__remove" data-key="{{ item.key }}" data-qty="0" aria-label="Remove">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <footer class="cart-drawer__footer" id="cart-drawer-footer"{% if cart.item_count == 0 %} hidden{% endif %}>
+        <div class="cart-drawer__subtotal">
+          <span>SUBTOTAL</span>
+          <span id="cart-subtotal">{{ cart.total_price | money }}</span>
+        </div>
+        <p class="cart-drawer__note">Shipping & taxes at checkout</p>
+        <a href="/checkout" class="btn btn--primary btn--full">CHECKOUT →</a>
+        <a href="/cart" class="cart-drawer__view-bag" data-close-cart>View full bag</a>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+{%- assign collection = collections[section.settings.collection] -%}
+
+{%- if collection != blank -%}
+<section class="featured-collection section-padding">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">{{ section.settings.title | default: collection.title | upcase }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      <a href="{{ collection.url }}" class="section-head__link">VIEW ALL →</a>
+    </div>
+
+    <div class="product-grid product-grid--{{ section.settings.columns }}">
+      {%- for product in collection.products limit: section.settings.products_limit -%}
+        {%- render 'product-card', product: product -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_cta -%}
+      <div class="section-cta">
+        <a href="{{ collection.url }}" class="btn btn--outline btn--lg">EXPLORE ALL {{ collection.title | upcase }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section heading (leave blank to use collection title)"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show 'View All' button",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Featured Collection" }]
+}
+{% endschema %}

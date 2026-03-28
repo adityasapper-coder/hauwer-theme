@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "product-template",
+      "settings": {
+        "show_shipping_info": true
+      }
+    }
+  },
+  "order": ["main"]
+}

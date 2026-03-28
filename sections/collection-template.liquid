@@ -1,0 +1,199 @@
+<div class="collection-page">
+
+  <!-- Collection Banner -->
+  <div class="collection-banner">
+    {%- if collection.image -%}
+      <img class="collection-banner__img" src="{{ collection.image | img_url: '2000x600', crop: 'center' }}" alt="{{ collection.title | escape }}" width="2000" height="600" loading="eager">
+      <div class="collection-banner__overlay"></div>
+    {%- endif -%}
+    <div class="collection-banner__content">
+      <h1 class="collection-banner__title">{{ collection.title | upcase }}</h1>
+      {%- if collection.description != blank -%}
+        <p class="collection-banner__desc">{{ collection.description }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Filter & Sort Bar (Nobero-inspired) -->
+    <div class="collection-toolbar" id="collection-toolbar">
+      <div class="collection-toolbar__left">
+        <span class="collection-count">{{ collection.products_count }} PRODUCTS</span>
+
+        <!-- Filter toggles -->
+        {%- if section.settings.show_filters -%}
+          <div class="filter-group" id="filter-group">
+            {%- for filter in collection.filters -%}
+              <div class="filter-item" data-filter-id="{{ filter.param_name }}">
+                <button type="button" class="filter-trigger" aria-expanded="false">
+                  {{ filter.label }}
+                  <svg class="filter-chevron" width="10" height="10" viewBox="0 0 10 6" fill="none">
+                    <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <div class="filter-dropdown" hidden>
+                  {%- if filter.type == 'list' -%}
+                    {%- for filter_value in filter.values -%}
+                      <label class="filter-option">
+                        <input
+                          type="checkbox"
+                          name="{{ filter_value.param_name }}"
+                          value="{{ filter_value.value }}"
+                          {% if filter_value.active %}checked{% endif %}
+                          form="collection-filters-form">
+                        <span class="filter-option__label">
+                          {{ filter_value.label }}
+                          <span class="filter-option__count">({{ filter_value.count }})</span>
+                        </span>
+                      </label>
+                    {%- endfor -%}
+                  {%- elsif filter.type == 'price_range' -%}
+                    <div class="filter-price-range">
+                      <div class="filter-price-inputs">
+                        <label>
+                          From
+                          <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" form="collection-filters-form">
+                        </label>
+                        <label>
+                          To
+                          <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" form="collection-filters-form">
+                        </label>
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  <div class="filter-dropdown__actions">
+                    <button type="submit" form="collection-filters-form" class="btn btn--primary btn--sm">Apply</button>
+                    <a href="{{ collection.url }}" class="filter-clear-link">Clear</a>
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="collection-toolbar__right">
+        <!-- Grid toggle -->
+        <div class="grid-toggle" role="group" aria-label="Grid view">
+          <button type="button" class="grid-toggle__btn active" data-cols="2" aria-label="2 columns">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="0" y="0" width="7" height="7" fill="currentColor"/><rect x="9" y="0" width="7" height="7" fill="currentColor"/>
+              <rect x="0" y="9" width="7" height="7" fill="currentColor"/><rect x="9" y="9" width="7" height="7" fill="currentColor"/>
+            </svg>
+          </button>
+          <button type="button" class="grid-toggle__btn" data-cols="3" aria-label="3 columns">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="0" y="0" width="4" height="7" fill="currentColor"/><rect x="6" y="0" width="4" height="7" fill="currentColor"/><rect x="12" y="0" width="4" height="7" fill="currentColor"/>
+              <rect x="0" y="9" width="4" height="7" fill="currentColor"/><rect x="6" y="9" width="4" height="7" fill="currentColor"/><rect x="12" y="9" width="4" height="7" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sort by -->
+        <div class="sort-wrapper">
+          <label for="sort-select" class="sort-label">SORT:</label>
+          <select id="sort-select" class="sort-select" onchange="window.location.search = window.location.search.replace(/sort_by=[^&]*/, '') + '&sort_by=' + this.value">
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            <option value="manual" {% if sort_by == 'manual' %}selected{% endif %}>Featured</option>
+            <option value="best-selling" {% if sort_by == 'best-selling' %}selected{% endif %}>Best Selling</option>
+            <option value="title-ascending" {% if sort_by == 'title-ascending' %}selected{% endif %}>A–Z</option>
+            <option value="title-descending" {% if sort_by == 'title-descending' %}selected{% endif %}>Z–A</option>
+            <option value="price-ascending" {% if sort_by == 'price-ascending' %}selected{% endif %}>Price: Low–High</option>
+            <option value="price-descending" {% if sort_by == 'price-descending' %}selected{% endif %}>Price: High–Low</option>
+            <option value="created-descending" {% if sort_by == 'created-descending' %}selected{% endif %}>New Arrivals</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active filters -->
+    {%- assign active_filters = 0 -%}
+    {%- for filter in collection.filters -%}
+      {%- assign active_filters = active_filters | plus: filter.active_values.size -%}
+    {%- endfor -%}
+    {%- if active_filters > 0 -%}
+      <div class="active-filters">
+        {%- for filter in collection.filters -%}
+          {%- for filter_value in filter.active_values -%}
+            <a href="{{ filter_value.url_to_remove }}" class="active-filter-tag">
+              {{ filter_value.label }} ×
+            </a>
+          {%- endfor -%}
+        {%- endfor -%}
+        <a href="{{ collection.url }}" class="active-filter-clear">Clear all</a>
+      </div>
+    {%- endif -%}
+
+    <!-- Product Grid -->
+    <form id="collection-filters-form" action="{{ collection.url }}">
+      <div class="product-grid product-grid--{{ section.settings.grid_columns }} js-product-grid" id="product-grid">
+        {%- if collection.products.size > 0 -%}
+          {%- for product in collection.products -%}
+            {%- render 'product-card', product: product -%}
+          {%- endfor -%}
+        {%- else -%}
+          <p class="collection-empty">No products found. <a href="{{ collection.url }}">Clear filters</a></p>
+        {%- endif -%}
+      </div>
+    </form>
+
+    <!-- Pagination -->
+    {%- if paginate.pages > 1 -%}
+      <div class="pagination">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="pagination__btn">← Prev</a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="pagination__page">{{ part.title }}</a>
+          {%- else -%}
+            {%- if part.title == paginate.current_page -%}
+              <span class="pagination__page pagination__page--current">{{ part.title }}</span>
+            {%- else -%}
+              <span class="pagination__ellipsis">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="pagination__btn">Next →</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filters",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "grid_columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    }
+  ],
+  "presets": [{ "name": "Collection" }]
+}
+{% endschema %}

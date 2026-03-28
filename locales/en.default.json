@@ -1,0 +1,50 @@
+{
+  "general": {
+    "password_page": {
+      "coming_soon": "Coming Soon",
+      "login_form_heading": "Enter store using password",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "admin_link_html": "Are you the store owner? <a href=\"/admin\" target=\"_blank\">Log in here</a>"
+    },
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Bag",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "on_sale": "Sale",
+      "quantity": {
+        "label": "Quantity",
+        "increase": "Increase quantity for {{ product }}",
+        "decrease": "Decrease quantity for {{ product }}"
+      }
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your Bag",
+      "empty": "Your bag is empty",
+      "checkout": "Checkout",
+      "subtotal": "Subtotal",
+      "remove": "Remove"
+    }
+  },
+  "collections": {
+    "general": {
+      "no_matches": "Sorry, there are no products in this collection",
+      "items_with_count_one": "{{ count }} product",
+      "items_with_count_other": "{{ count }} products"
+    }
+  },
+  "search": {
+    "no_results_html": "Your search for \"{{ terms }}\" did not yield any results.",
+    "results_with_count_one": "{{ count }} result for \"{{ terms }}\"",
+    "results_with_count_other": "{{ count }} results for \"{{ terms }}\""
+  }
+}

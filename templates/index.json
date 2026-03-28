@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "heading": "WEAR THE STREETS",
+        "label": "SS26 COLLECTION",
+        "subheading": "Premium streetwear from Delhi.",
+        "btn_text": "SHOP NOW",
+        "btn_link": "/collections/all",
+        "full_height": true,
+        "overlay_opacity": 40
+      }
+    },
+    "featured-men": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "NEW ARRIVALS",
+        "products_limit": 8,
+        "columns": "4",
+        "show_cta": true
+      }
+    }
+  },
+  "order": ["hero", "featured-men"]
+}
