@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a0909">
+  <meta name="theme-color" content="#FAF8F4">
   <title>
     {{ page_title }}
     {%- unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}
@@ -19,6 +19,13 @@
   {{ content_for_header }}
 </head>
 <body class="{% if customer %}logged-in{% endif %}">
+
+  <!-- Grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Custom cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
 
   {%- section 'announcement-bar' -%}
   {%- section 'header' -%}
@@ -96,6 +103,7 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
 </body>
 </html>

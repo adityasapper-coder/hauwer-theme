@@ -1,8 +1,49 @@
 /* =============================================================
-   HAUWER SHOPIFY THEME — theme.js
+   HAUWER SHOPIFY THEME — theme.js  (matches hauwer-3d)
    ============================================================= */
 
 'use strict';
+
+/* ── CUSTOM CURSOR ──────────────────────────────────────────── */
+(function(){
+  var dot  = document.getElementById('cursor-dot');
+  var ring = document.getElementById('cursor-ring');
+  if(!dot || !ring) return;
+  var mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY; });
+  (function tick(){
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    dot.style.left  = mx + 'px';
+    dot.style.top   = my + 'px';
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* ── REVEAL ON SCROLL ───────────────────────────────────────── */
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!els.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ── PRODUCT CARD SHINE ─────────────────────────────────────── */
+document.addEventListener('mousemove', function(e){
+  var card = e.target.closest('[data-shine-wrap]');
+  if(!card) return;
+  var r = card.getBoundingClientRect();
+  var x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+  var y = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+  var shine = card.querySelector('[data-shine]');
+  if(shine){ shine.style.setProperty('--mx', x + '%'); shine.style.setProperty('--my', y + '%'); }
+});
 
 /* ── UTILITIES ─────────────────────────────────────────────── */
 function $(sel, ctx = document) { return ctx.querySelector(sel); }

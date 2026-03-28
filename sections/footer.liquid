@@ -1,70 +1,74 @@
-<footer class="site-footer">
-  <div class="footer-inner">
+<footer class="site-footer" id="contact">
+  <div class="site-footer__inner">
 
-    <div class="footer-brand">
-      <a href="/" class="footer-logo">{{ shop.name | upcase }}</a>
-      <p class="footer-tagline">{{ section.settings.tagline }}</p>
-      <div class="footer-social">
-        {%- if section.settings.instagram != blank -%}
-          <a href="{{ section.settings.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.5"/>
-              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-            </svg>
-          </a>
-        {%- endif -%}
-        {%- if section.settings.twitter != blank -%}
-          <a href="{{ section.settings.twitter }}" target="_blank" rel="noopener" aria-label="Twitter / X">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </a>
-        {%- endif -%}
+    <!-- Brand col -->
+    <div style="display:flex;flex-direction:column;gap:28px;">
+      <div>
+        <a href="/" class="site-footer__brand-name">HAUWER</a>
+        <p class="site-footer__tagline">Premium streetwear from Delhi. Built for those who move ahead of culture.</p>
+      </div>
+
+      <div>
+        <p class="site-footer__newsletter-label">JOIN THE DROP LIST</p>
+        <form class="site-footer__newsletter-form" action="/contact#newsletter" method="post" accept-charset="UTF-8">
+          <input type="hidden" name="form_type" value="customer">
+          <input type="hidden" name="utf8" value="✓">
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input type="email" name="contact[email]" placeholder="YOUR EMAIL" required>
+          <button type="submit">JOIN</button>
+        </form>
+      </div>
+
+      <div class="site-footer__socials">
+        <a href="#">INSTAGRAM</a>
+        <a href="#">TWITTER</a>
+        <a href="#">PINTEREST</a>
       </div>
     </div>
 
-    <div class="footer-links">
-      {%- for i in (1..3) -%}
-        {%- assign menu_key = 'menu_' | append: i -%}
-        {%- assign title_key = 'menu_title_' | append: i -%}
-        {%- if section.settings[menu_key] != blank -%}
-          <div class="footer-col">
-            <h4 class="footer-col__title">{{ section.settings[title_key] }}</h4>
-            <ul>
-              {%- for link in section.settings[menu_key].links -%}
-                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-              {%- endfor -%}
-            </ul>
-          </div>
-        {%- endif -%}
-      {%- endfor -%}
+    <!-- Shop col -->
+    <div class="site-footer__col">
+      <h4 class="site-footer__col-title">SHOP</h4>
+      <ul>
+        <li><a href="/collections/new-arrivals">New Arrivals</a></li>
+        <li><a href="/collections/cargos">Cargos</a></li>
+        <li><a href="/collections/tees">Tees</a></li>
+        <li><a href="/collections/jackets">Jackets</a></li>
+        <li><a href="/collections/all">All Products</a></li>
+      </ul>
     </div>
 
-    {%- if section.settings.show_newsletter -%}
-    <div class="footer-newsletter">
-      <h4>STAY IN THE LOOP</h4>
-      <p>New drops, exclusive deals & more.</p>
-      <form method="post" action="/contact#footer-newsletter" id="footer-newsletter-form" accept-charset="UTF-8">
-        <input type="hidden" name="form_type" value="customer">
-        <input type="hidden" name="utf8" value="✓">
-        <input type="hidden" name="contact[tags]" value="newsletter">
-        <div class="newsletter-row">
-          <input type="email" name="contact[email]" placeholder="YOUR EMAIL" required aria-label="Email address">
-          <button type="submit" class="btn btn--primary">JOIN</button>
-        </div>
-      </form>
+    <!-- Brand col -->
+    <div class="site-footer__col">
+      <h4 class="site-footer__col-title">BRAND</h4>
+      <ul>
+        <li><a href="/pages/about">About</a></li>
+        <li><a href="/pages/our-story">Our Story</a></li>
+        <li><a href="/pages/lookbook">Lookbook</a></li>
+        <li><a href="/pages/sustainability">Sustainability</a></li>
+      </ul>
     </div>
-    {%- endif -%}
+
+    <!-- Support col -->
+    <div class="site-footer__col">
+      <h4 class="site-footer__col-title">SUPPORT</h4>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/size-guide">Size Guide</a></li>
+        <li><a href="/policies/refund-policy">Returns</a></li>
+        <li><a href="/policies/shipping-policy">Shipping</a></li>
+        <li><a href="/pages/faq">FAQ</a></li>
+      </ul>
+    </div>
 
   </div>
 
-  <div class="footer-bottom">
-    <p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
-    <div class="footer-bottom__links">
+  <div class="site-footer__bottom">
+    <p class="site-footer__copy">© {{ 'now' | date: '%Y' }} HAUWER. All rights reserved. Made in Delhi, India.</p>
+    <div class="site-footer__legal">
       <a href="/policies/privacy-policy">Privacy</a>
       <a href="/policies/terms-of-service">Terms</a>
-      <a href="/policies/refund-policy">Returns</a>
+      <a href="/policies/refund-policy">Refunds</a>
     </div>
   </div>
 </footer>
@@ -72,54 +76,6 @@
 {% schema %}
 {
   "name": "Footer",
-  "settings": [
-    {
-      "type": "text",
-      "id": "tagline",
-      "label": "Brand tagline",
-      "default": "Premium streetwear from Delhi."
-    },
-    {
-      "type": "text",
-      "id": "instagram",
-      "label": "Instagram URL"
-    },
-    {
-      "type": "text",
-      "id": "twitter",
-      "label": "X / Twitter URL"
-    },
-    {
-      "type": "text",
-      "id": "menu_title_1",
-      "label": "Column 1 title",
-      "default": "SHOP"
-    },
-    {
-      "type": "link_list",
-      "id": "menu_1",
-      "label": "Column 1 menu",
-      "default": "main-menu"
-    },
-    {
-      "type": "text",
-      "id": "menu_title_2",
-      "label": "Column 2 title",
-      "default": "HELP"
-    },
-    {
-      "type": "link_list",
-      "id": "menu_2",
-      "label": "Column 2 menu",
-      "default": "footer"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_newsletter",
-      "label": "Show newsletter signup",
-      "default": true
-    }
-  ],
-  "presets": [{ "name": "Footer" }]
+  "settings": []
 }
 {% endschema %}

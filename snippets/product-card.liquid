@@ -1,122 +1,60 @@
-{%- comment -%}
-  Renders a product card.
-  Usage: {%- render 'product-card', product: product -%}
-{%- endcomment -%}
+<a href="{{ product.url }}" class="product-card" data-shine-card>
+  <div class="product-card-img" data-shine-wrap>
+    <div class="card-shine" data-shine></div>
 
-{%- assign first_image = product.featured_image -%}
-{%- assign second_image = product.images[1] -%}
-{%- assign on_sale = false -%}
-{%- if product.compare_at_price > product.price -%}
-  {%- assign on_sale = true -%}
-{%- endif -%}
-
-<div class="product-card">
-
-  <!-- Image -->
-  <a href="{{ product.url }}" class="product-card__img-wrap" aria-label="{{ product.title | escape }}">
-    {%- if first_image -%}
-      <img
-        class="product-card__img product-card__img--primary"
-        src="{{ first_image | img_url: '600x800', crop: 'center' }}"
-        alt="{{ first_image.alt | default: product.title | escape }}"
-        width="300" height="400"
-        loading="lazy">
-      {%- if second_image -%}
-        <img
-          class="product-card__img product-card__img--hover"
-          src="{{ second_image | img_url: '600x800', crop: 'center' }}"
-          alt="{{ second_image.alt | default: product.title | escape }}"
-          width="300" height="400"
-          loading="lazy">
-      {%- endif -%}
-    {%- else -%}
-      <div class="product-card__img-placeholder"></div>
-    {%- endif -%}
-
-    {%- if on_sale -%}
-      <span class="product-card__badge">SALE</span>
-    {%- elsif product.available == false -%}
-      <span class="product-card__badge product-card__badge--soldout">SOLD OUT</span>
-    {%- endif -%}
-  </a>
-
-  <!-- Color swatches (Nobero-style) -->
-  {%- assign color_option = nil -%}
-  {%- for option in product.options_with_values -%}
-    {%- assign opt_downcase = option.name | downcase -%}
-    {%- if opt_downcase == 'color' or opt_downcase == 'colour' -%}
-      {%- assign color_option = option -%}
-    {%- endif -%}
-  {%- endfor -%}
-
-  {%- if color_option != nil and color_option.values.size > 1 -%}
-    <div class="product-card__swatches">
-      {%- for value in color_option.values limit: 5 -%}
-        {%- assign swatch_handle = value | handle -%}
-        <span
-          class="swatch"
-          style="background-color: {{ value }};"
-          title="{{ value }}"
-          data-color="{{ value | escape }}">
-        </span>
-      {%- endfor -%}
-      {%- if color_option.values.size > 5 -%}
-        <span class="swatch-more">+{{ color_option.values.size | minus: 5 }}</span>
+    <div style="position:absolute;top:12px;left:12px;z-index:10;">
+      {%- if product.tags contains 'new' or product.tags contains 'New' -%}
+        <span class="tag-pill" style="color:#C5F700;border-color:#C5F700;">NEW DROP</span>
+      {%- elsif product.tags contains 'bestseller' -%}
+        <span class="tag-pill" style="color:#fff;border-color:rgba(255,255,255,.4);">BESTSELLER</span>
+      {%- elsif product.tags contains 'limited' -%}
+        <span class="tag-pill" style="color:#C5F700;border-color:#C5F700;">LIMITED</span>
+      {%- else -%}
+        <span class="tag-pill" style="color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.2);">SS26</span>
       {%- endif -%}
     </div>
-  {%- endif -%}
 
-  <!-- Info -->
-  <div class="product-card__info">
-    <a href="{{ product.url }}" class="product-card__title">{{ product.title }}</a>
-    <div class="product-card__price">
-      {%- if on_sale -%}
-        <span class="price price--sale">{{ product.price | money }}</span>
-        <span class="price price--compare">{{ product.compare_at_price | money }}</span>
-      {%- else -%}
-        <span class="price">{{ product.price | money }}</span>
+    {%- if product.compare_at_price > product.price -%}
+      {%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+      <div style="position:absolute;top:12px;right:12px;z-index:10;background:var(--orange);color:#fff;font-family:var(--font-body);font-weight:700;font-size:.58rem;padding:4px 8px;border-radius:2px;">-{{ discount }}%</div>
+    {%- endif -%}
+
+    {%- if product.featured_image -%}
+      <img src="{{ product.featured_image | img_url: '600x800', crop: 'center' }}" alt="{{ product.title | escape }}" width="600" height="800" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+      {%- if product.images[1] -%}
+        <img src="{{ product.images[1] | img_url: '600x800', crop: 'center' }}" alt="{{ product.title | escape }}" width="600" height="800" loading="lazy" class="product-card-hover-img" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0;transition:opacity .5s var(--ease);">
       {%- endif -%}
+    {%- else -%}
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#111 100%);">
+        <span style="font-family:var(--font-head);color:rgba(255,255,255,.04);font-size:clamp(4rem,8vw,7rem);user-select:none;">{{ product.title | split: ' ' | first }}</span>
+      </div>
+    {%- endif -%}
+
+    <div class="product-card-quick-add">
+      <button type="button" data-quick-add="{{ product.variants.first.id }}">QUICK ADD</button>
     </div>
   </div>
 
-  <!-- Quick Add -->
-  {%- if product.available -%}
-    {%- assign has_sizes = false -%}
-    {%- for option in product.options_with_values -%}
-      {%- assign opt_down = option.name | downcase -%}
-      {%- if opt_down == 'size' -%}
-        {%- assign has_sizes = true -%}
-        {%- assign size_option = option -%}
-      {%- endif -%}
-    {%- endfor -%}
-
-    {%- if has_sizes -%}
-      <div class="product-card__quick-add">
-        <div class="quick-add-sizes">
-          {%- for variant in product.variants -%}
-            {%- if variant.available -%}
-              <button
-                type="button"
-                class="quick-add-size"
-                data-variant-id="{{ variant.id }}"
-                data-product-title="{{ product.title | escape }}">
-                {{ variant.title | split: ' / ' | last }}
-              </button>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
+  <div style="padding:12px;background:var(--bg-2);display:flex;flex-direction:column;gap:8px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+      <div>
+        <p style="font-family:var(--font-body);color:var(--muted);font-size:.5rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px;">{{ product.type | default: 'APPAREL' }}</p>
+        <h3 style="font-family:var(--font-body);color:var(--text);font-weight:600;font-size:14px;line-height:1.3;">{{ product.title }}</h3>
       </div>
-    {%- else -%}
-      <button
-        type="button"
-        class="product-card__atc-btn"
-        data-variant-id="{{ product.first_available_variant.id }}"
-        data-product-title="{{ product.title | escape }}">
-        ADD TO BAG
-      </button>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;">
+        <span style="font-family:var(--font-body);color:var(--text);font-weight:700;font-size:14px;">{{ product.price | money }}</span>
+        {%- if product.compare_at_price > product.price -%}
+          <span style="font-family:var(--font-body);color:var(--muted);font-size:12px;text-decoration:line-through;">{{ product.compare_at_price | money }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- assign size_opt = product.options_with_values | where: 'name', 'Size' | first -%}
+    {%- if size_opt -%}
+      <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px;">
+        {%- for v in size_opt.values limit: 4 -%}
+          <span style="font-family:var(--font-body);color:var(--muted);font-size:.55rem;border:1px solid var(--border);padding:2px 6px;">{{ v }}</span>
+        {%- endfor -%}
+      </div>
     {%- endif -%}
-  {%- else -%}
-    <button type="button" class="product-card__atc-btn" disabled>SOLD OUT</button>
-  {%- endif -%}
-
-</div>
+  </div>
+</a>

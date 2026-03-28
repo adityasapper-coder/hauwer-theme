@@ -1,0 +1,20 @@
+<div class="marquee-section">
+  <div class="marquee-track" aria-hidden="true">
+    {%- assign text = 'HAUWER SS26  ·  BUILT DIFFERENT  ·  100% PREMIUM COTTON  ·  LIMITED DROP  ·  NEW ARRIVALS  ·  DELHI · INDIA  ·  ENGINEERED FOR THE STREETS' -%}
+    <span style="font-family:var(--font-head);font-size:clamp(2.8rem,3.5vw,3.5rem);color:var(--bg-3);padding-right:64px;line-height:1;white-space:nowrap;">{{ text }}&nbsp;&nbsp;&nbsp;</span>
+    <span style="font-family:var(--font-head);font-size:clamp(2.8rem,3.5vw,3.5rem);color:var(--bg-3);padding-right:64px;line-height:1;white-space:nowrap;" aria-hidden="true">{{ text }}&nbsp;&nbsp;&nbsp;</span>
+  </div>
+  <div class="marquee-track marquee-track-rev" aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;">
+    {%- assign items = 'HAUWER SS26,BUILT DIFFERENT,100% PREMIUM COTTON,LIMITED DROP,NEW ARRIVALS,DELHI · INDIA,ENGINEERED FOR THE STREETS' | split: ',' -%}
+    {%- assign small_text = items | join: '  ·  ' -%}
+    <span class="label-text" style="color:rgba(255,60,0,.5);font-size:.55rem;padding-right:64px;white-space:nowrap;">{{ small_text }}&nbsp;&nbsp;&nbsp;</span>
+    <span class="label-text" style="color:rgba(255,60,0,.5);font-size:.55rem;padding-right:64px;white-space:nowrap;" aria-hidden="true">{{ small_text }}&nbsp;&nbsp;&nbsp;</span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": []
+}
+{% endschema %}

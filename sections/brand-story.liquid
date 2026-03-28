@@ -1,0 +1,111 @@
+<section class="brand-story" id="story">
+
+  <div class="brand-story__header reveal">
+    <p class="brand-story__super">THE BRAND STORY</p>
+    <h2 class="brand-story__heading reveal reveal-d1">
+      THREE PILLARS.<br>
+      <span class="muted">ONE VISION.</span>
+    </h2>
+  </div>
+
+  <div class="brand-story__chapters">
+
+    <div class="chapter" id="chapter-0" data-chapter="0">
+      <div class="chapter__left">
+        <span class="chapter__num">01</span>
+        <div style="padding-top:16px;">
+          <span class="tag-pill" style="color:var(--orange);border-color:var(--orange);font-size:.5rem;margin-bottom:16px;display:inline-flex;">MATERIALS</span>
+          <p class="chapter__body-text">Every HAUWER piece starts with one obsession — fabric. We source 100% premium cotton built to last, breathe, and hold its shape through every season.</p>
+        </div>
+      </div>
+      <div class="chapter__right">
+        <h3 class="chapter__title">CRAFTED
+IN COTTON</h3>
+        <div class="chapter__line-wrap">
+          <div class="chapter-line" data-line="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter" id="chapter-1" data-chapter="1">
+      <div class="chapter__left">
+        <span class="chapter__num">02</span>
+        <div style="padding-top:16px;">
+          <span class="tag-pill" style="color:var(--orange);border-color:var(--orange);font-size:.5rem;margin-bottom:16px;display:inline-flex;">DESIGN</span>
+          <p class="chapter__body-text">Silhouettes built for movement. Cargo drops, oversized tees, track fits — every cut is designed to command attention without asking for it.</p>
+        </div>
+      </div>
+      <div class="chapter__right">
+        <h3 class="chapter__title">ENGINEERED
+FOR THE
+STREETS</h3>
+        <div class="chapter__line-wrap">
+          <div class="chapter-line" data-line="1"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter" id="chapter-2" data-chapter="2">
+      <div class="chapter__left">
+        <span class="chapter__num">03</span>
+        <div style="padding-top:16px;">
+          <span class="tag-pill" style="color:var(--orange);border-color:var(--orange);font-size:.5rem;margin-bottom:16px;display:inline-flex;">IDENTITY</span>
+          <p class="chapter__body-text">HAUWER isn't just clothing. Born in Delhi, worn by those who move ahead of culture — not behind it.</p>
+        </div>
+      </div>
+      <div class="chapter__right">
+        <h3 class="chapter__title">WEAR
+THE
+CULTURE</h3>
+        <div class="chapter__line-wrap">
+          <div class="chapter-line" data-line="2"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="brand-story__cta reveal">
+    <p class="brand-story__cta-text">
+      READY TO WEAR<br>
+      <span class="orange">THE STREETS?</span>
+    </p>
+    <a href="/collections/all" class="btn btn-primary" style="font-size:.65rem;">
+      SHOP SS26 COLLECTION
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+        <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+
+</section>
+
+<script>
+(function(){
+  var chapters = document.querySelectorAll('.chapter');
+  var lines    = document.querySelectorAll('[data-line]');
+
+  function activate(idx){
+    chapters.forEach(function(c, i){
+      c.classList.toggle('active', i === idx);
+    });
+    lines.forEach(function(l, i){
+      l.classList.toggle('active', i === idx);
+    });
+  }
+
+  activate(0);
+
+  chapters.forEach(function(ch, idx){
+    ch.addEventListener('mouseenter', function(){ activate(idx); });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "settings": [],
+  "presets": [{ "name": "Brand Story" }]
+}
+{% endschema %}
