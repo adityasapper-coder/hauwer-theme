@@ -19,6 +19,11 @@
         "type": "shopify://apps/razorpay-cod-magic-checkout/blocks/magicx-script/c13c688d-5c45-4054-b95f-1edd63faa705",
         "disabled": false,
         "settings": {}
+      },
+      "17844675666580048712": {
+        "type": "shopify://apps/razorpay-cod-magic-checkout/blocks/sso-script/c13c688d-5c45-4054-b95f-1edd63faa705",
+        "disabled": false,
+        "settings": {}
       }
     }
   },
